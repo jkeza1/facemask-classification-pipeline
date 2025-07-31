@@ -1,7 +1,7 @@
 import os
 import uuid
 from flask import Flask, request, jsonify, render_template
-from .model import load_model_from_file, predict_image, retrain_model  # Adjust import as needed
+from model import load_model_from_file, predict_image, retrain_model  # Adjust import as needed
 
 app = Flask(__name__)
 
