@@ -15,6 +15,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route('/', methods=['GET', 'POST'])
 def home():
     prediction = None
+    retrain_message = request.args.get('retrain_message')
     if request.method == 'POST':
         if 'image' not in request.files:
             return render_template("index.html", prediction="No image file provided")
@@ -33,7 +34,7 @@ def home():
         # Optionally remove file after prediction
         # os.remove(img_path)
 
-    return render_template("index.html", prediction=prediction)
+    return render_template("index.html", prediction=prediction, retrain_message=retrain_message)
 
 
 @app.route('/predict', methods=['POST'])
@@ -64,17 +65,35 @@ def predict():
     except Exception as e:
         print(f"[ERROR] Exception during prediction: {e}")
         return jsonify({'error': 'Prediction failed', 'details': str(e)}), 500
-
+from flask import redirect, url_for
 
 @app.route('/retrain', methods=['POST'])
 def retrain():
-    new_data_path = request.form.get('data_path')
+    if 'training_data' not in request.files:
+        return redirect(url_for('home'))
 
-    if not new_data_path or not os.path.exists(new_data_path):
-        return render_template("index.html", prediction="Invalid or missing data path for retraining")
+    files = request.files.getlist('training_data')
+    if not files or files[0].filename == '':
+        return redirect(url_for('home'))
 
-    retrain_model(new_data_path)
-    return render_template("index.html", prediction="Model retrained successfully!")
+    retrain_folder = os.path.join(UPLOAD_FOLDER, f"retrain_{uuid.uuid4().hex}")
+    os.makedirs(retrain_folder, exist_ok=True)
+
+    total_files = 0
+    for file in files:
+        if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+            filename = f"{uuid.uuid4().hex}.jpg"
+            file_path = os.path.join(retrain_folder, filename)
+            file.save(file_path)
+            total_files += 1
+
+    if total_files == 0:
+        return redirect(url_for('home'))
+
+    retrain_model(retrain_folder)
+
+    # No message, just redirect
+    return redirect(url_for('home'))
 
 
 if __name__ == "__main__":
