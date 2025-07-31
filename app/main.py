@@ -1,14 +1,15 @@
 import os
 import uuid
 from flask import Flask, request, jsonify, render_template
-from model import load_model_from_file, predict_image, retrain_model  # Adjust import as needed
+from model import load_model_from_file, predict_image, retrain_model
 
 app = Flask(__name__)
 
 # Load your model once at startup
 model = load_model_from_file()
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/', methods=['GET', 'POST'])
