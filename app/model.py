@@ -2,7 +2,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 import os
-from app.config import MODEL_PATH
+from config import MODEL_PATH
 
 def load_model_from_file():
     return load_model(MODEL_PATH)
