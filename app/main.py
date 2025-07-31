@@ -38,23 +38,32 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image file provided'}), 400
+    try:
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image file provided'}), 400
 
-    img_file = request.files['image']
-    if img_file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
+        img_file = request.files['image']
+        if img_file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
 
-    filename = f"{uuid.uuid4().hex}.jpg"
-    img_path = os.path.join(UPLOAD_FOLDER, filename)
-    img_file.save(img_path)
+        filename = f"{uuid.uuid4().hex}.jpg"
+        img_path = os.path.join(UPLOAD_FOLDER, filename)
 
-    prediction = predict_image(model, img_path)
+        print(f"[DEBUG] Saving uploaded image to {img_path}")
+        img_file.save(img_path)
 
-    # Optionally remove file after prediction
-    # os.remove(img_path)
+        print(f"[DEBUG] Saved uploaded image to {img_path}")
 
-    return jsonify({'prediction': prediction})
+        prediction = predict_image(model, img_path)
+
+        # Optionally remove file after prediction
+        # os.remove(img_path)
+
+        return jsonify({'prediction': prediction})
+
+    except Exception as e:
+        print(f"[ERROR] Exception during prediction: {e}")
+        return jsonify({'error': 'Prediction failed', 'details': str(e)}), 500
 
 
 @app.route('/retrain', methods=['POST'])
@@ -71,4 +80,3 @@ def retrain():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
