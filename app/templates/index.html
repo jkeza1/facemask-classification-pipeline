@@ -60,8 +60,8 @@
       <!-- Retrain Section -->
       <h2>🧠 Retrain Model</h2>
      <form method="POST" action="/retrain" enctype="multipart/form-data">
-      <input type="file" name="training_data" multiple accept="image/*" />
-      <button type="submit">Retrain Model</button>
+      <input type="file" name="training_data" multiple>
+      <button type="submit">Retrain</button>
     </form>
 
       {% if retrain_message %}
@@ -69,6 +69,10 @@
         <p>{{ retrain_message }}</p>
       </div>
       {% endif %}
+      {% if retrained == '1' %}
+        <p class="success-message"> Model retrained successfully!</p>
+      {% endif %}
+
     </div>
   </main>
 

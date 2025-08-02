@@ -184,3 +184,23 @@ hr {
   border: none;
   border-top: 1px solid #e2e8f0;
 }
+.success-message {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+}
+.retrain-result,
+.success-message {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fade out + slide up */
+.slide-fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+

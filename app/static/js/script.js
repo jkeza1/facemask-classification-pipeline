@@ -1,64 +1,74 @@
+// Run when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // DOM Elements
+  const uploadArea = document.getElementById('uploadArea');
+  const fileInput = document.getElementById('fileInput');
+  const predictBtn = document.getElementById('predictBtn');
+  const uploadLabel = document.querySelector('.upload-label');
+  const uploadForm = document.getElementById('uploadForm');
+  const spinner = document.getElementById('spinner');
 
-document.addEventListener('DOMContentLoaded', function () {
-    // DOM Elements
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
-    const predictBtn = document.getElementById('predictBtn');
-    const uploadLabel = document.querySelector('.upload-label');
-    const uploadForm = document.getElementById('uploadForm');
-    const spinner = document.getElementById('spinner');
+  uploadArea.addEventListener('click', () => fileInput.click());
 
-    // Click to open file dialog
-    uploadArea.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => handleFileSelection(fileInput.files));
 
-    // File input change handler
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files.length) {
-            predictBtn.disabled = false;
-            uploadArea.classList.add('highlight');
-            uploadLabel.textContent = fileInput.files[0].name;
-        }
-    });
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event =>
+    uploadArea.addEventListener(event, preventDefaults, false)
+  );
 
-    // Drag and drop events
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, preventDefaults, false);
-    });
+  ['dragenter', 'dragover'].forEach(event =>
+    uploadArea.addEventListener(event, () => highlight(uploadArea), false)
+  );
 
-    ['dragenter', 'dragover'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, highlight, false);
-    });
+  ['dragleave', 'drop'].forEach(event =>
+    uploadArea.addEventListener(event, () => unhighlight(uploadArea), false)
+  );
 
-    ['dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, unhighlight, false);
-    });
+  uploadArea.addEventListener('drop', e => {
+    const files = e.dataTransfer.files;
+    fileInput.files = files;
+    handleFileSelection(files);
+  });
 
-    uploadArea.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        fileInput.files = files;
-        predictBtn.disabled = false;
-        uploadArea.classList.add('highlight');
-        uploadLabel.textContent = files[0].name;
-    });
+  uploadForm.addEventListener('submit', () => {
+    spinner.style.display = 'block';
+  });
 
-    // Show spinner on submit
-    uploadForm.addEventListener('submit', () => {
-        spinner.style.display = 'block';
-    });
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
 
-    // Utility functions
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
+  function highlight(el) {
+    el.classList.add('highlight');
+  }
+
+  function unhighlight(el) {
+    el.classList.remove('highlight');
+  }
+
+  function handleFileSelection(files) {
+    if (files.length) {
+      predictBtn.disabled = false;
+      highlight(uploadArea);
+      uploadLabel.textContent = files[0].name;
     }
+  }
 
-    function highlight() {
-        uploadArea.classList.add('highlight');
-    }
+  // Handle retrain success messages
+  const message = document.querySelector('.retrain-result');
+  const success = document.querySelector('.success-message');
 
-    function unhighlight() {
-        uploadArea.classList.remove('highlight');
-    }
+  if (message || success) {
+    setTimeout(() => {
+      if (message) message.classList.add('slide-fade-out');
+      if (success) success.classList.add('slide-fade-out');
+
+      // Hide after animation
+      setTimeout(() => {
+        if (message) message.style.display = 'none';
+        if (success) success.style.display = 'none';
+      }, 500); // Match this to your CSS animation duration
+    }, 4000);
+  }
 });
-

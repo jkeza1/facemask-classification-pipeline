@@ -15,14 +15,14 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route('/', methods=['GET', 'POST'])
 def home():
     prediction = None
-    retrain_message = request.args.get('retrain_message')
+    retrained = request.args.get('retrained', '0')
     if request.method == 'POST':
         if 'image' not in request.files:
-            return render_template("index.html", prediction="No image file provided")
+            return render_template('index.html', retrain_message=None, retrained=None)
 
         img_file = request.files['image']
         if img_file.filename == '':
-            return render_template("index.html", prediction="No selected file")
+            return render_template("index.html", prediction="No selected file" , retrained=retrained)
 
         # Save uploaded file with a unique name
         filename = f"{uuid.uuid4().hex}.jpg"
@@ -34,7 +34,7 @@ def home():
         # Optionally remove file after prediction
         # os.remove(img_path)
 
-    return render_template("index.html", prediction=prediction, retrain_message=retrain_message)
+    return render_template("index.html", prediction=prediction, retrained=retrained)
 
 
 @app.route('/predict', methods=['POST'])
@@ -65,7 +65,6 @@ def predict():
     except Exception as e:
         print(f"[ERROR] Exception during prediction: {e}")
         return jsonify({'error': 'Prediction failed', 'details': str(e)}), 500
-from flask import redirect, url_for
 
 @app.route('/retrain', methods=['POST'])
 def retrain():
@@ -92,8 +91,9 @@ def retrain():
 
     retrain_model(retrain_folder)
 
-    # No message, just redirect
-    return redirect(url_for('home'))
+    # 👇 Redirect to home with success flag
+    retrain_message = "Model retrained successfully."
+    return render_template('index.html', retrain_message=retrain_message, retrained='1')
 
 
 if __name__ == "__main__":
