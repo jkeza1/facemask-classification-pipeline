@@ -14,7 +14,7 @@
       <h1>😷 Facemask Detection</h1>
 
       <!-- Upload Form -->
-      <form method="POST" action="/predict" enctype="multipart/form-data" id="uploadForm">
+      <form method="POST" action="/" enctype="multipart/form-data" id="uploadForm">
         <div class="upload-area" id="uploadArea">
           <div class="upload-icon">📁</div>
           <label class="upload-label">Choose an image or drag & drop here</label>
@@ -30,48 +30,37 @@
         <p>Analyzing image...</p>
       </div>
 
-      <!-- Prediction Result -->
-      {% if prediction %}
-      <div class="result">
-        {% if image_path %}
-        <img src="{{ image_path }}" class="preview-image" alt="Uploaded Image" />
-        {% endif %}
+     <!-- Prediction Result -->
+{% if prediction %}
+<div class="result-section">
+  <h2>🔍 Prediction Result</h2>
+  <p><strong>Prediction:</strong> {{ prediction }}</p>
+  {% if details %}
+    <p><strong>Details:</strong> {{ details }}</p>
+  {% endif %}
+  <div class="confidence">Confidence: {{ confidence }}%</div>
+  {% if image_path %}
+    <img src="{{ image_path }}" alt="Uploaded Image" width="300" />
+  {% endif %}
+</div>
+{% endif %}
 
-        <div class="prediction-card 
-          {% if prediction == 'with_mask' %}with-mask
-          {% elif prediction == 'without_mask' %}without-mask
-          {% else %}incorrect-mask{% endif %}">
-          <div class="prediction">
-            {% if prediction == 'with_mask' %}
-            ✅ Properly Wearing Mask
-            {% elif prediction == 'without_mask' %}
-            ⚠️ No Mask Detected
-            {% else %}
-            ⚠️ Incorrectly Worn Mask
-            {% endif %}
-          </div>
-          <div class="confidence">Confidence: {{ confidence }}%</div>
-        </div>
-      </div>
-      {% endif %}
-
-      <hr />
 
       <!-- Retrain Section -->
-      <h2>🧠 Retrain Model</h2>
-     <form method="POST" action="/retrain" enctype="multipart/form-data">
-      <input type="file" name="training_data" multiple>
-      <button type="submit">Retrain</button>
-    </form>
+<hr />
+<h2>🧠 Retrain Model</h2>
+<form method="POST" action="/retrain" enctype="multipart/form-data">
+  <input type="file" name="training_data" multiple required />
+  <button type="submit" class="btn">Retrain</button>
+</form>
 
-      {% if retrain_message %}
-      <div class="retrain-result">
-        <p>{{ retrain_message }}</p>
-      </div>
-      {% endif %}
-      {% if retrained == '1' %}
-        <p class="success-message"> Model retrained successfully!</p>
-      {% endif %}
+{% if retrain_message %}
+  <div class="retrain-result success-message">
+    ✅ {{ retrain_message }}
+  </div>
+{% elif retrained == '1' %}
+  <p class="success-message">✅ Model retrained successfully!</p>
+{% endif %}
 
     </div>
   </main>
@@ -80,6 +69,19 @@
     <p>Facemask Detection System | Machine Learning Project</p>
   </footer>
 
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const predictBtn = document.getElementById("predictBtn");
+    const spinner = document.getElementById("spinner");
+    const form = document.getElementById("uploadForm");
+
+    fileInput.addEventListener("change", () => {
+      predictBtn.disabled = !fileInput.files.length;
+    });
+
+    form.addEventListener("submit", () => {
+      spinner.style.display = "block";
+    });
+  </script>
 </body>
 </html>
