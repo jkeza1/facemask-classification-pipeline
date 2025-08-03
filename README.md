@@ -99,15 +99,15 @@ facemask-classification-pipeline/
 - **Database**: File-based storage (extendable to PostgreSQL/MongoDB)
 
 ### DevOps & Testing
-- **Containerization**: Docker
 - **Load Testing**: Locust
-- **Deployment**: Cloud-ready (AWS/GCP/Azure compatible)
+- **Deployment**: Render (Cloud Platform)
 - **CI/CD**: GitHub Actions ready
 
 ### Data Processing
-- **Image Processing**: OpenCV, PIL
-- **Data Analysis**: NumPy, Pandas, Matplotlib
-- **Model Serving**: Flask REST API
+Dataset: Kaggle Face Mask Detection Dataset
+Image Processing: OpenCV, PIL
+Data Analysis: NumPy, Pandas, Matplotlib
+Model Serving: Flask REST API
 
 ---
 
@@ -115,8 +115,8 @@ facemask-classification-pipeline/
 
 ### Prerequisites
 - Python 3.11.9
-- Docker (optional, for containerization)
 - Git
+- Kaggle account (for dataset download)
 
 ### Quick Start
 
@@ -259,9 +259,9 @@ python app/main.py
 # Using Gunicorn
 gunicorn --bind 0.0.0.0:5000 app.main:app --workers 4
 
-# Using Docker
-docker run -p 5000:5000 -e FLASK_ENV=production mask-classifier
-```
+# Using Gunicorn
+pip install gunicorn
+gunicorn --bind 0.0.0.0:5000 app.main:app --workers 4
 
 ### Cloud Deployment
 - **Heroku**: `git push heroku main`
@@ -311,14 +311,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Dataset inspired by [MaskedFace-Net](https://github.com/cabani/MaskedFace-Net)
-- Built with ❤️ using Flask and TensorFlow
-- Special thanks to the open-source community
+ataset: Face Mask Detection Dataset by Vijay Kumar on Kaggle
+- Built using Flask and TensorFlow
+
 
 ---
 
 ## Contact
-
-**Your Name** - [@yourtwitter](https://twitter.com/yourtwitter) - your.email@example.com
 
 Project Link: [https://github.com/yourusername/facemask-classification-pipeline](https://github.com/yourusername/facemask-classification-pipeline)
