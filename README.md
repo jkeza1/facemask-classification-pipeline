@@ -1,6 +1,8 @@
 # Face Mask Classification Pipeline
 
-![Demo GIF](assets/demo.gif) <!-- Add a demo GIF if available -->
+📹 **Video Demo**  
+Watch a full video demonstration of the project:  
+👉 [https://youtu.be/sMp5G98IE4M](https://youtu.be/sMp5G98IE4M)
 
 An end-to-end machine learning pipeline for classifying face mask usage in images, deployed on the cloud with retraining capabilities and load testing.
 
